@@ -106,6 +106,13 @@ export interface AppVersion {
   version: string;
 }
 
+export interface AppAboutInfo {
+  projectName: string;
+  version: string;
+  exePath: string;
+  releaseUrl: string;
+}
+
 export interface UpdateInfo {
   currentVersion: string;
   latestVersion: string;

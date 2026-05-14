@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSites } from "./hooks/useSites";
 import { useI18n } from "./i18n";
-import { AppLog, CreateSiteInput, Site, UpdateInfo, UpdateSiteInput } from "./types";
-import { CheckForUpdate, DownloadAndInstallUpdate } from "../wailsjs/go/main/App";
+import { AppAboutInfo, AppLog, CreateSiteInput, Site, UpdateInfo, UpdateSiteInput } from "./types";
+import { CheckForUpdate, DownloadAndInstallUpdate, GetAppAboutInfo } from "../wailsjs/go/main/App";
+import AboutDialog from "./components/AboutDialog";
 import ConfirmDialog from "./components/ConfirmDialog";
 import FilterBar from "./components/FilterBar";
 import LogViewer from "./components/LogViewer";
@@ -59,6 +60,10 @@ function App() {
   const [updateLoading, setUpdateLoading] = useState(false);
   const [updateInstalling, setUpdateInstalling] = useState(false);
   const [updateError, setUpdateError] = useState("");
+  const [showAboutDialog, setShowAboutDialog] = useState(false);
+  const [aboutInfo, setAboutInfo] = useState<AppAboutInfo | null>(null);
+  const [aboutLoading, setAboutLoading] = useState(false);
+  const [aboutError, setAboutError] = useState("");
   const autoUpdateChecked = useRef(false);
 
   useEffect(() => {
@@ -134,6 +139,25 @@ function App() {
     loadLogs().catch(console.error);
   };
 
+  const loadAboutInfo = useCallback(async () => {
+    setAboutLoading(true);
+    setAboutError("");
+    try {
+      const result = await GetAppAboutInfo();
+      setAboutInfo(result as unknown as AppAboutInfo);
+    } catch (err) {
+      setAboutError(getErrorMessage(err));
+      console.error("Failed to load about info:", err);
+    } finally {
+      setAboutLoading(false);
+    }
+  }, []);
+
+  const handleOpenAbout = () => {
+    setShowAboutDialog(true);
+    loadAboutInfo().catch(console.error);
+  };
+
   const handleCheckUpdate = useCallback(async (openDialog = true) => {
     setUpdateLoading(true);
     setUpdateError("");
@@ -173,6 +197,11 @@ function App() {
     }
   }, []);
 
+  const handleAboutCheckUpdates = useCallback(() => {
+    setShowAboutDialog(false);
+    handleCheckUpdate(true).catch(console.error);
+  }, [handleCheckUpdate]);
+
   useEffect(() => {
     if (autoUpdateChecked.current) {
       return;
@@ -209,6 +238,12 @@ function App() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
+              <button onClick={handleOpenAbout} className="btn-secondary">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 17v-5m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {t.about}
+              </button>
               <button
                 onClick={() => {
                   handleCheckUpdate(true).catch(console.error);
@@ -347,6 +382,19 @@ function App() {
         }}
         onInstall={handleInstallUpdate}
         onClose={() => setShowUpdateDialog(false)}
+      />
+
+      <AboutDialog
+        isOpen={showAboutDialog}
+        aboutInfo={aboutInfo}
+        loading={aboutLoading}
+        error={aboutError}
+        checkingUpdates={updateLoading}
+        onCheckUpdates={handleAboutCheckUpdates}
+        onOpenReleaseLink={(url) => {
+          openSiteUrl(url).catch(console.error);
+        }}
+        onClose={() => setShowAboutDialog(false)}
       />
 
       <ConfirmDialog

@@ -18,6 +18,8 @@ export function DeleteTag(arg1:number):Promise<void>;
 
 export function DownloadAndInstallUpdate():Promise<model.UpdateInstallResult>;
 
+export function GetAppAboutInfo():Promise<model.AppAboutInfo>;
+
 export function GetAppVersion():Promise<model.AppVersion>;
 
 export function GetSecondaryPasswordStatus():Promise<model.SecondaryPasswordStatus>;

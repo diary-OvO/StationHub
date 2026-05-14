@@ -1,5 +1,23 @@
 export namespace model {
+
+	export class AppAboutInfo {
+	    projectName: string;
+	    version: string;
+	    exePath: string;
+	    releaseUrl: string;
+
+	    static createFrom(source: any = {}) {
+	        return new AppAboutInfo(source);
+	    }
 	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.projectName = source["projectName"];
+	        this.version = source["version"];
+	        this.exePath = source["exePath"];
+	        this.releaseUrl = source["releaseUrl"];
+	    }
+	}
 	export class AppLog {
 	    id: number;
 	    time: string;
@@ -327,4 +345,3 @@ export namespace model {
 	}
 
 }
-

@@ -34,6 +34,10 @@ export function DownloadAndInstallUpdate() {
   return window['go']['main']['App']['DownloadAndInstallUpdate']();
 }
 
+export function GetAppAboutInfo() {
+  return window['go']['main']['App']['GetAppAboutInfo']();
+}
+
 export function GetAppVersion() {
   return window['go']['main']['App']['GetAppVersion']();
 }

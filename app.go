@@ -204,6 +204,20 @@ func (a *App) GetAppVersion() model.AppVersion {
 	return a.updateService.CurrentVersion()
 }
 
+func (a *App) GetAppAboutInfo() (model.AppAboutInfo, error) {
+	executablePath, err := os.Executable()
+	if err != nil {
+		a.logger.Error("about.load", err, "resolve current executable path failed")
+		return model.AppAboutInfo{}, err
+	}
+	executablePath, err = filepath.Abs(executablePath)
+	if err != nil {
+		a.logger.Error("about.load", err, "resolve absolute executable path failed")
+		return model.AppAboutInfo{}, err
+	}
+	return a.updateService.AboutInfo(executablePath), nil
+}
+
 func (a *App) CheckForUpdate() (model.UpdateInfo, error) {
 	return a.updateService.Check(a.callContext())
 }
