@@ -1,5 +1,6 @@
 # Go / Wails build output
 /build/*
+!/build/appicon.png
 !/build/windows/
 /build/windows/*
 !/build/windows/icon.ico
@@ -9,13 +10,13 @@
 # Node / frontend
 frontend/node_modules/
 frontend/dist/
-frontend/package-lock.json
 # Wails regenerates this on every `wails dev` / `wails build`
 frontend/package.json.md5
 
-# Editor
+# Editor / local tools
 .idea/
 .vscode/
+.claude/
 .DS_Store
 *.log
 
