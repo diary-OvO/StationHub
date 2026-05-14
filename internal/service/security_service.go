@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"io"
 
-	"stationhub/internal/model"
+	"llm-station-hub/internal/model"
 )
 
 const (

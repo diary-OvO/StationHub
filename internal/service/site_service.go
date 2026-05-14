@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"stationhub/internal/model"
+	"llm-station-hub/internal/model"
 )
 
 type SiteService struct {

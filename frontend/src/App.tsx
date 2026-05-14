@@ -44,11 +44,11 @@ function App() {
   const [editingSite, setEditingSite] = useState<Site | null>(null);
   const [accountSite, setAccountSite] = useState<Site | null>(null);
   const [deletingSiteId, setDeletingSiteId] = useState<number | null>(null);
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("stationhub-theme") === "dark");
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("llm-station-hub-theme") === "dark");
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("stationhub-theme", darkMode ? "dark" : "light");
+    localStorage.setItem("llm-station-hub-theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
   useEffect(() => {

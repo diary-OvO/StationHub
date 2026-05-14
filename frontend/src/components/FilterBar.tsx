@@ -15,7 +15,7 @@ export default function FilterBar({ filter, tags, onFilterChange }: FilterBarPro
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-1">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--color-muted)]">
-            StationHub
+            llm-station-hub
           </p>
           <p className="text-sm text-[var(--color-foreground)]">
             {t.searchPlaceholder}

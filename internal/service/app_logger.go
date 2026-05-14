@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"stationhub/internal/model"
+	"llm-station-hub/internal/model"
 )
 
 type AppLogger struct {

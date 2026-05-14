@@ -9,9 +9,9 @@ import (
 	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"stationhub/internal/db"
-	"stationhub/internal/model"
-	"stationhub/internal/service"
+	"llm-station-hub/internal/db"
+	"llm-station-hub/internal/model"
+	"llm-station-hub/internal/service"
 )
 
 // App struct
@@ -38,13 +38,13 @@ func (a *App) startup(ctx context.Context) {
 		return
 	}
 
-	dbDir := filepath.Join(configDir, "StationHub")
+	dbDir := filepath.Join(configDir, "llm-station-hub")
 	if err := os.MkdirAll(dbDir, 0755); err != nil {
 		a.logger.Error("db.load", err, "create database directory %q failed", dbDir)
 		return
 	}
 
-	dbPath := filepath.Join(dbDir, "stationhub.db")
+	dbPath := filepath.Join(dbDir, "llm-station-hub.db")
 	a.logger.Info("db.load", "database path %q", dbPath)
 
 	database, err := db.InitDB(dbPath)

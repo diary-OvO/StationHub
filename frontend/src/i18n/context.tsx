@@ -12,13 +12,13 @@ const I18nContext = createContext<I18nContextType | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
-    const saved = localStorage.getItem("stationhub-locale");
+    const saved = localStorage.getItem("llm-station-hub-locale");
     return saved === "en" || saved === "zh" ? saved : "zh";
   });
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
-    localStorage.setItem("stationhub-locale", newLocale);
+    localStorage.setItem("llm-station-hub-locale", newLocale);
   };
 
   const toggleLocale = () => {

@@ -1,9 +1,9 @@
-# StationHub
+# llm-station-hub
 
 > Language: [简体中文](./README.md) · **English**
 
 A Windows-first Wails desktop app for managing sites and accounts.
-StationHub keeps site entries, accounts, tags, quota status, and session logs in a local SQLite database.
+llm-station-hub keeps site entries, accounts, tags, quota status, and session logs in a local SQLite database.
 
 ## Features
 
@@ -18,8 +18,8 @@ StationHub keeps site entries, accounts, tags, quota status, and session logs in
 
 ## Data and Security
 
-- Data is stored in `StationHub/stationhub.db` under the user config directory.
-  - On Windows this is usually `%AppData%\StationHub\stationhub.db`.
+- Data is stored in `llm-station-hub/llm-station-hub.db` under the user config directory.
+  - On Windows this is usually `%AppData%\llm-station-hub\llm-station-hub.db`.
 - SQLite runs with WAL mode and foreign keys enabled.
 - Default account passwords are encrypted with a local application secret before being written to the database.
 - The secondary password is stored as a salted hash. Plain text is never stored.
@@ -45,8 +45,8 @@ StationHub keeps site entries, accounts, tags, quota status, and session logs in
 2. Clone the repository and install frontend dependencies.
 
    ```shell
-   git clone https://github.com/diary-OvO/StationHub.git
-   cd StationHub
+   git clone https://github.com/diary-OvO/llm-station-hub.git
+   cd llm-station-hub
    cd frontend && npm install && cd ..
    ```
 
@@ -65,7 +65,7 @@ StationHub keeps site entries, accounts, tags, quota status, and session logs in
 Build output:
 
 ```text
-build/bin/StationHub.exe
+build/bin/llm-station-hub.exe
 ```
 
 ## Automated Release

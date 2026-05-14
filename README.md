@@ -1,4 +1,4 @@
-# StationHub
+# llm-station-hub
 
 > 语言：**简体中文** · [English](./README_EN.md)
 
@@ -18,8 +18,8 @@
 
 ## 数据与安全
 
-- 数据默认保存到用户配置目录下的 `StationHub/stationhub.db`。
-  - Windows 通常位于 `%AppData%\StationHub\stationhub.db`。
+- 数据默认保存到用户配置目录下的 `llm-station-hub/llm-station-hub.db`。
+  - Windows 通常位于 `%AppData%\llm-station-hub\llm-station-hub.db`。
 - SQLite 启用 WAL 和外键约束。
 - 普通账号密码使用本地应用密钥加密后写入数据库。
 - 二级密码只保存加盐哈希，不保存明文。
@@ -45,8 +45,8 @@
 2. 克隆仓库并安装前端依赖。
 
    ```shell
-   git clone https://github.com/diary-OvO/StationHub.git
-   cd StationHub
+   git clone https://github.com/diary-OvO/llm-station-hub.git
+   cd llm-station-hub
    cd frontend && npm install && cd ..
    ```
 
@@ -65,7 +65,7 @@
 构建产物：
 
 ```text
-build/bin/StationHub.exe
+build/bin/llm-station-hub.exe
 ```
 
 ## 自动发布

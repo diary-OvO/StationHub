@@ -1,4 +1,4 @@
-module stationhub
+module llm-station-hub
 
 go 1.25.0
 

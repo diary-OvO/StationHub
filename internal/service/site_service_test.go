@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"stationhub/internal/db"
-	"stationhub/internal/model"
+	"llm-station-hub/internal/db"
+	"llm-station-hub/internal/model"
 )
 
 func TestListSitesTreatsAllTypeAsNoTypeFilter(t *testing.T) {
@@ -164,7 +164,7 @@ func TestLStationAccountDoesNotRequireOrStoreCredentials(t *testing.T) {
 func newTestSiteService(t *testing.T) *SiteService {
 	t.Helper()
 
-	database, err := db.InitDB(filepath.Join(t.TempDir(), "stationhub-test.db"))
+	database, err := db.InitDB(filepath.Join(t.TempDir(), "llm-station-hub-test.db"))
 	if err != nil {
 		t.Fatalf("InitDB failed: %v", err)
 	}

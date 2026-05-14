@@ -40,7 +40,7 @@ jobs:
         run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
 
       - name: Build
-        run: wails build -v 2 -clean -platform windows/amd64 -o StationHub
+        run: wails build -v 2 -clean -platform windows/amd64 -o llm-station-hub
 
       - name: Inspect build output
         shell: pwsh
@@ -55,7 +55,7 @@ jobs:
       - name: Package
         shell: pwsh
         run: |
-          $assetName = "StationHub-${{ github.ref_name }}-windows-amd64"
+          $assetName = "llm-station-hub-${{ github.ref_name }}-windows-amd64"
           if (-not (Test-Path build/bin)) {
             throw "build/bin does not exist after wails build."
           }
@@ -70,7 +70,7 @@ jobs:
 
           if (-not $binary) {
             $binary = $binaries |
-              Where-Object { $_.Name -eq "StationHub" -or $_.BaseName -eq "StationHub" } |
+              Where-Object { $_.Name -eq "llm-station-hub" -or $_.BaseName -eq "llm-station-hub" } |
               Select-Object -First 1
           }
 
@@ -82,7 +82,7 @@ jobs:
           New-Item -ItemType Directory -Path release -Force | Out-Null
           $stageDir = Join-Path "release" $assetName
           New-Item -ItemType Directory -Path $stageDir -Force | Out-Null
-          Copy-Item -LiteralPath $binary.FullName -Destination (Join-Path $stageDir "StationHub.exe") -Force
+          Copy-Item -LiteralPath $binary.FullName -Destination (Join-Path $stageDir "llm-station-hub.exe") -Force
           Compress-Archive -Path "$stageDir/*" -DestinationPath "release/$assetName.zip" -Force
 
       - name: Upload package artifact

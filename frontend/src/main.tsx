@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import { I18nProvider } from "./i18n";
 
-if (localStorage.getItem("stationhub-theme") === "dark") {
+if (localStorage.getItem("llm-station-hub-theme") === "dark") {
   document.documentElement.classList.add("dark");
 }
 

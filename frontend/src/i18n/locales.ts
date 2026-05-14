@@ -1,6 +1,6 @@
 export const locales = {
   zh: {
-    appName: "StationHub",
+    appName: "llm-station-hub",
     appSubtitle: "站点与账号管理器",
     logs: "日志",
     logsTitle: "本次运行日志",
@@ -121,7 +121,7 @@ export const locales = {
     refreshPasswordView: "重新验证",
   },
   en: {
-    appName: "StationHub",
+    appName: "llm-station-hub",
     appSubtitle: "Sites and Account Manager",
     logs: "Logs",
     logsTitle: "Session Logs",
