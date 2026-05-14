@@ -42,12 +42,25 @@ jobs:
       - name: Build
         run: wails build -clean -platform windows/amd64 -o StationHub
 
+      - name: Inspect build output
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path build/bin -Recurse -File |
+            Select-Object FullName, Length, LastWriteTime
+
       - name: Package
         shell: pwsh
         run: |
           $assetName = "StationHub-${{ github.ref_name }}-windows-amd64"
+          $exe = Get-ChildItem -Path build/bin -Recurse -File -Filter "*.exe" |
+            Where-Object { $_.Name -notlike "*~" } |
+            Sort-Object Length -Descending |
+            Select-Object -First 1
+          if (-not $exe) {
+            throw "No Windows executable found under build/bin after wails build."
+          }
           New-Item -ItemType Directory -Path release -Force | Out-Null
-          Compress-Archive -Path "build/bin/StationHub.exe" -DestinationPath "release/$assetName.zip" -Force
+          Compress-Archive -Path $exe.FullName -DestinationPath "release/$assetName.zip" -Force
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
