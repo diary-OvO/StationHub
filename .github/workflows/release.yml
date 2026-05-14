@@ -40,27 +40,50 @@ jobs:
         run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
 
       - name: Build
-        run: wails build -clean -platform windows/amd64 -o StationHub
+        run: wails build -v 2 -clean -platform windows/amd64 -o StationHub
 
       - name: Inspect build output
         shell: pwsh
         run: |
-          Get-ChildItem -Path build/bin -Recurse -File |
-            Select-Object FullName, Length, LastWriteTime
+          if (Test-Path build) {
+            Get-ChildItem -Path build -Recurse -Force |
+              Select-Object FullName, Length, LastWriteTime
+          } else {
+            Write-Host "build directory does not exist"
+          }
 
       - name: Package
         shell: pwsh
         run: |
           $assetName = "StationHub-${{ github.ref_name }}-windows-amd64"
-          $exe = Get-ChildItem -Path build/bin -Recurse -File -Filter "*.exe" |
-            Where-Object { $_.Name -notlike "*~" } |
-            Sort-Object Length -Descending |
-            Select-Object -First 1
-          if (-not $exe) {
-            throw "No Windows executable found under build/bin after wails build."
+          if (-not (Test-Path build/bin)) {
+            throw "build/bin does not exist after wails build."
           }
+
+          $binaries = Get-ChildItem -Path build/bin -Recurse -Force -File |
+            Where-Object { $_.Name -notlike "*~" } |
+            Sort-Object Length -Descending
+
+          $binary = $binaries |
+            Where-Object { $_.Extension -ieq ".exe" } |
+            Select-Object -First 1
+
+          if (-not $binary) {
+            $binary = $binaries |
+              Where-Object { $_.Name -eq "StationHub" -or $_.BaseName -eq "StationHub" } |
+              Select-Object -First 1
+          }
+
+          if (-not $binary) {
+            $listed = ($binaries | ForEach-Object { $_.FullName }) -join "`n"
+            throw "No Windows application binary found under build/bin after wails build. Files:`n$listed"
+          }
+
           New-Item -ItemType Directory -Path release -Force | Out-Null
-          Compress-Archive -Path $exe.FullName -DestinationPath "release/$assetName.zip" -Force
+          $stageDir = Join-Path "release" $assetName
+          New-Item -ItemType Directory -Path $stageDir -Force | Out-Null
+          Copy-Item -LiteralPath $binary.FullName -Destination (Join-Path $stageDir "StationHub.exe") -Force
+          Compress-Archive -Path "$stageDir/*" -DestinationPath "release/$assetName.zip" -Force
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
