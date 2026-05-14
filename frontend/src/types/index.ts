@@ -101,3 +101,30 @@ export interface AppLog {
   action: string;
   message: string;
 }
+
+export interface AppVersion {
+  version: string;
+}
+
+export interface UpdateInfo {
+  currentVersion: string;
+  latestVersion: string;
+  hasUpdate: boolean;
+  canInstall: boolean;
+  releaseName: string;
+  releaseUrl: string;
+  publishedAt: string;
+  body: string;
+  assetName: string;
+  assetUrl: string;
+  assetSize: number;
+  message: string;
+}
+
+export interface UpdateInstallResult {
+  version: string;
+  assetName: string;
+  downloadPath: string;
+  scriptPath: string;
+  sha256: string;
+}

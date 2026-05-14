@@ -13,6 +13,7 @@ llm-station-hub keeps site entries, accounts, tags, quota status, and session lo
 - **Quota status:** Summarize account quota state and classify sites as active, empty-quota, or archived.
 - **Tags and filters:** Manage tags and filter sites by keyword, type, check-in flag, tags, and archive state.
 - **Session logs:** Inspect operation logs and errors from the current app session.
+- **Software updates:** Check GitHub Releases on startup; when a new version is available, download the new exe, exit, replace the running executable, and restart automatically.
 - **UI preferences:** Switch between Simplified Chinese / English and light / dark themes.
 - **Quick open:** Open site URLs directly in the system default browser.
 
@@ -76,7 +77,13 @@ The project includes a GitHub Actions tag release workflow:
 .github/workflows/release.yml
 ```
 
-Pushing a tag that matches `v*.*.*` builds the Windows package and creates or updates the GitHub Release.
+Pushing a tag that matches `v*.*.*` builds the Windows exe and creates or updates the GitHub Release. Release assets are uploaded as a plain exe, for example:
+
+```text
+llm-station-hub-v0.1.0-windows-amd64.exe
+```
+
+The release workflow injects the tag into the app version used by the client update checker.
 
 ```shell
 git tag v0.1.0
@@ -106,5 +113,5 @@ git push origin v0.1.0
 - Site, account, tag, and secondary password management are available.
 - Active, empty-quota, and archived site grouping is available.
 - Simplified Chinese / English switching and light / dark themes are available.
-- Windows tag release automation is available.
+- Windows tag release automation and client update checks are available.
 - Data is currently local-only in SQLite. Cloud sync is not available.

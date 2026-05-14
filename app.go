@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"llm-station-hub/internal/db"
@@ -14,16 +15,23 @@ import (
 	"llm-station-hub/internal/service"
 )
 
+var appVersion = "dev"
+
 // App struct
 type App struct {
-	ctx         context.Context
-	siteService *service.SiteService
-	logger      *service.AppLogger
+	ctx           context.Context
+	siteService   *service.SiteService
+	updateService *service.UpdateService
+	logger        *service.AppLogger
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{logger: service.NewAppLogger()}
+	logger := service.NewAppLogger()
+	return &App{
+		logger:        logger,
+		updateService: service.NewUpdateService(appVersion, logger),
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -192,8 +200,37 @@ func (a *App) OpenSiteURL(rawURL string) error {
 	return nil
 }
 
+func (a *App) GetAppVersion() model.AppVersion {
+	return a.updateService.CurrentVersion()
+}
+
+func (a *App) CheckForUpdate() (model.UpdateInfo, error) {
+	return a.updateService.Check(a.callContext())
+}
+
+func (a *App) DownloadAndInstallUpdate() (model.UpdateInstallResult, error) {
+	result, err := a.updateService.DownloadAndPrepareUpdate(a.callContext())
+	if err != nil {
+		return model.UpdateInstallResult{}, err
+	}
+	if a.ctx != nil {
+		go func() {
+			time.Sleep(350 * time.Millisecond)
+			runtime.Quit(a.ctx)
+		}()
+	}
+	return result, nil
+}
+
 func (a *App) ListLogs() []model.AppLog {
 	return a.logger.Entries()
+}
+
+func (a *App) callContext() context.Context {
+	if a.ctx != nil {
+		return a.ctx
+	}
+	return context.Background()
 }
 
 func (a *App) ensureSiteService(action string) error {

@@ -40,7 +40,7 @@ jobs:
         run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
 
       - name: Build
-        run: wails build -v 2 -clean -platform windows/amd64 -o llm-station-hub
+        run: wails build -v 2 -clean -platform windows/amd64 -o llm-station-hub -ldflags "-X main.appVersion=${{ github.ref_name }}"
 
       - name: Inspect build output
         shell: pwsh
@@ -80,16 +80,13 @@ jobs:
           }
 
           New-Item -ItemType Directory -Path release -Force | Out-Null
-          $stageDir = Join-Path "release" $assetName
-          New-Item -ItemType Directory -Path $stageDir -Force | Out-Null
-          Copy-Item -LiteralPath $binary.FullName -Destination (Join-Path $stageDir "llm-station-hub.exe") -Force
-          Compress-Archive -Path "$stageDir/*" -DestinationPath "release/$assetName.zip" -Force
+          Copy-Item -LiteralPath $binary.FullName -Destination "release/$assetName.exe" -Force
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-amd64
-          path: release/*.zip
+          path: release/*.exe
           if-no-files-found: error
 
   release:

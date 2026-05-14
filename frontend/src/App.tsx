@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSites } from "./hooks/useSites";
 import { useI18n } from "./i18n";
-import { AppLog, CreateSiteInput, Site, UpdateSiteInput } from "./types";
+import { AppLog, CreateSiteInput, Site, UpdateInfo, UpdateSiteInput } from "./types";
+import { CheckForUpdate, DownloadAndInstallUpdate } from "../wailsjs/go/main/App";
 import ConfirmDialog from "./components/ConfirmDialog";
 import FilterBar from "./components/FilterBar";
 import LogViewer from "./components/LogViewer";
@@ -9,6 +10,14 @@ import SiteAccountManager from "./components/SiteAccountManager";
 import SiteForm from "./components/SiteForm";
 import SiteTable from "./components/SiteTable";
 import TagManager from "./components/TagManager";
+import UpdateDialog from "./components/UpdateDialog";
+
+function getErrorMessage(err: unknown) {
+  if (err instanceof Error) {
+    return err.message;
+  }
+  return String(err);
+}
 
 function App() {
   const { t, toggleLocale } = useI18n();
@@ -45,6 +54,12 @@ function App() {
   const [accountSite, setAccountSite] = useState<Site | null>(null);
   const [deletingSiteId, setDeletingSiteId] = useState<number | null>(null);
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("llm-station-hub-theme") === "dark");
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+  const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [updateInstalling, setUpdateInstalling] = useState(false);
+  const [updateError, setUpdateError] = useState("");
+  const autoUpdateChecked = useRef(false);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -119,6 +134,53 @@ function App() {
     loadLogs().catch(console.error);
   };
 
+  const handleCheckUpdate = useCallback(async (openDialog = true) => {
+    setUpdateLoading(true);
+    setUpdateError("");
+    if (openDialog) {
+      setShowUpdateDialog(true);
+    }
+    try {
+      const result = await CheckForUpdate();
+      const nextInfo = result as unknown as UpdateInfo;
+      setUpdateInfo(nextInfo);
+      if (nextInfo.hasUpdate) {
+        setShowUpdateDialog(true);
+      }
+      return nextInfo;
+    } catch (err) {
+      const message = getErrorMessage(err);
+      setUpdateError(message);
+      if (openDialog) {
+        setShowUpdateDialog(true);
+      }
+      console.error("Failed to check for updates:", err);
+      return null;
+    } finally {
+      setUpdateLoading(false);
+    }
+  }, []);
+
+  const handleInstallUpdate = useCallback(async () => {
+    setUpdateInstalling(true);
+    setUpdateError("");
+    try {
+      await DownloadAndInstallUpdate();
+    } catch (err) {
+      setUpdateError(getErrorMessage(err));
+      setUpdateInstalling(false);
+      console.error("Failed to install update:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (autoUpdateChecked.current) {
+      return;
+    }
+    autoUpdateChecked.current = true;
+    handleCheckUpdate(false).catch(() => {});
+  }, [handleCheckUpdate]);
+
   return (
     <div className="relative min-h-screen overflow-hidden text-[var(--color-foreground)]">
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -147,6 +209,18 @@ function App() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => {
+                  handleCheckUpdate(true).catch(console.error);
+                }}
+                className={updateInfo?.hasUpdate ? "btn-primary" : "btn-secondary"}
+                aria-label={t.checkUpdates}
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v6h6M20 20v-6h-6M5.5 9A7.5 7.5 0 0118 6.5M18.5 15A7.5 7.5 0 016 17.5" />
+                </svg>
+                {updateInfo?.hasUpdate ? t.updateAvailableShort : t.checkUpdates}
+              </button>
               <button onClick={handleOpenLogs} className="btn-secondary">
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6M8 4h8l4 4v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2z" />
@@ -260,6 +334,19 @@ function App() {
         onRefresh={() => {
           loadLogs().catch(console.error);
         }}
+      />
+
+      <UpdateDialog
+        isOpen={showUpdateDialog}
+        updateInfo={updateInfo}
+        loading={updateLoading}
+        installing={updateInstalling}
+        error={updateError}
+        onCheck={() => {
+          handleCheckUpdate(true).catch(console.error);
+        }}
+        onInstall={handleInstallUpdate}
+        onClose={() => setShowUpdateDialog(false)}
       />
 
       <ConfirmDialog

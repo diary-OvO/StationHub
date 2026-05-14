@@ -13,6 +13,7 @@
 - **额度状态：** 按账号是否仍有额度自动汇总站点状态，区分正常站点、无额度站点和已归档站点。
 - **标签与筛选：** 支持标签管理，并可按关键字、站点类型、签到开关、标签和归档状态筛选。
 - **会话日志：** 查看本次应用运行期间的操作日志和错误日志。
+- **软件更新：** 启动时自动检查 GitHub Release；发现新版本后可下载新版 exe，退出当前应用并自动替换重启。
 - **界面体验：** 支持简体中文 / English 切换，以及深色 / 浅色主题。
 - **快速打开：** 可直接用系统默认浏览器打开站点 URL。
 
@@ -76,7 +77,13 @@ build/bin/llm-station-hub.exe
 .github/workflows/release.yml
 ```
 
-推送符合 `v*.*.*` 格式的 tag 后，会自动构建 Windows 包并创建 / 更新 GitHub Release。
+推送符合 `v*.*.*` 格式的 tag 后，会自动构建 Windows exe 并创建 / 更新 GitHub Release。Release 资产会直接上传裸 exe，例如：
+
+```text
+llm-station-hub-v0.1.0-windows-amd64.exe
+```
+
+发布流水线会把 tag 注入到应用版本号中，用于客户端检查更新。
 
 ```shell
 git tag v0.1.0
@@ -106,5 +113,5 @@ git push origin v0.1.0
 - 已支持站点、账号、标签和二级密码管理。
 - 已支持正常站点、无额度站点和已归档站点分组展示。
 - 已支持简体中文 / English 切换和深浅色主题。
-- 已支持 Windows tag release 自动发布。
+- 已支持 Windows tag release 自动发布和客户端检查更新。
 - 当前数据仅保存在本机 SQLite 数据库中，暂无云同步能力。

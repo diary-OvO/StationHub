@@ -20,6 +20,18 @@ export namespace model {
 	        this.message = source["message"];
 	    }
 	}
+	export class AppVersion {
+	    version: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new AppVersion(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.version = source["version"];
+	    }
+	}
 	export class CreateSiteAccountInput {
 	    siteId: number;
 	    accountType: string;
@@ -215,6 +227,60 @@ export namespace model {
 		}
 	}
 	
+	export class UpdateInfo {
+	    currentVersion: string;
+	    latestVersion: string;
+	    hasUpdate: boolean;
+	    canInstall: boolean;
+	    releaseName: string;
+	    releaseUrl: string;
+	    publishedAt: string;
+	    body: string;
+	    assetName: string;
+	    assetUrl: string;
+	    assetSize: number;
+	    message: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new UpdateInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.currentVersion = source["currentVersion"];
+	        this.latestVersion = source["latestVersion"];
+	        this.hasUpdate = source["hasUpdate"];
+	        this.canInstall = source["canInstall"];
+	        this.releaseName = source["releaseName"];
+	        this.releaseUrl = source["releaseUrl"];
+	        this.publishedAt = source["publishedAt"];
+	        this.body = source["body"];
+	        this.assetName = source["assetName"];
+	        this.assetUrl = source["assetUrl"];
+	        this.assetSize = source["assetSize"];
+	        this.message = source["message"];
+	    }
+	}
+	export class UpdateInstallResult {
+	    version: string;
+	    assetName: string;
+	    downloadPath: string;
+	    scriptPath: string;
+	    sha256: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new UpdateInstallResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.version = source["version"];
+	        this.assetName = source["assetName"];
+	        this.downloadPath = source["downloadPath"];
+	        this.scriptPath = source["scriptPath"];
+	        this.sha256 = source["sha256"];
+	    }
+	}
 	export class UpdateSiteAccountInput {
 	    siteId: number;
 	    accountType: string;
