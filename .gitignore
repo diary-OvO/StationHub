@@ -1,5 +1,24 @@
-/build/
-/frontend/node_modules/
-/frontend/dist/
-/.claude/
-/.idea/
+# Go / Wails build output
+/build/*
+!/build/windows/
+/build/windows/*
+!/build/windows/icon.ico
+*.exe
+*.tsbuildinfo
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/package-lock.json
+# Wails regenerates this on every `wails dev` / `wails build`
+frontend/package.json.md5
+
+# Editor
+.idea/
+.vscode/
+.DS_Store
+*.log
+
+# Local env
+.env
+.env.local
